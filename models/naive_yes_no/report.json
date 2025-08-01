@@ -1,0 +1,555 @@
+{
+  "Animalerie > Chiens": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Animalerie > Chiens > Transport et voyages > Accessoires voiture > Couvertures de protection": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Auto et Moto > Entretien auto et moto > Éponges, chiffons et brosses > Brosses": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Bagages > Accessoires > Accessoires de voyage": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Bagages > Accessoires > Accessoires de voyage > Etuis cravates": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Accessoires et outils": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Bain, savons et soins du corps > Produits pour le bain > Boules effervescentes": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Bain, savons et soins du corps > Produits pour le bain > Huiles de bain": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Coiffure et soins des cheveux > Appareils et outils de coiffure > Brosses": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 3.0
+  },
+  "Beauté et Parfum > Coiffure et soins des cheveux > Appareils et outils de coiffure > Ciseaux": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 2.0
+  },
+  "Beauté et Parfum > Coiffure et soins des cheveux > Appareils et outils de coiffure > Fers à boucler": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 2.0
+  },
+  "Beauté et Parfum > Coiffure et soins des cheveux > Shampooings et soins > Shampooings": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Maquillage > Corps > Paillettes": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Maquillage > Corps > Tatouages temporaires": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 2.0
+  },
+  "Beauté et Parfum > Maquillage > Lèvres > Rouges à lèvres": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 2.0
+  },
+  "Beauté et Parfum > Maquillage > Teint > Fonds de teint": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Soins pour la peau > Coffrets cadeaux": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Soins pour la peau > Corps > Produits hydratants > Mousses": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Soins pour la peau > Mains et pieds > Crèmes pour les mains et les ongles": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Vernis à ongles et manucure > Décorations et accessoires > Accessoires de décoration pour nail art": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Beauté et Parfum > Vernis à ongles et manucure > Décorations et accessoires > Accessoires de décoration pour nail art > Autocollants et pochoirs": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Vernis à ongles et manucure > Décorations et accessoires > Accessoires de décoration pour nail art > Fimo": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Beauté et Parfum > Vernis à ongles et manucure > Décorations et accessoires > Vernis gels semi-permanents": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Bricolage > Cuisines et salles de bain": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Bricolage > Cuisines et salles de bain > Installations salles de bain > Cuvettes WC": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Bricolage > Cuisines et salles de bain > Installations salles de bain > Robinets de lavabo": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Bricolage > Outillage à main et électroportatif > Outillage à main > Ensembles d'outils": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Bricolage > Outillage à main et électroportatif > Outillage à main > Outils de coupe > Coupe-verre": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Bricolage > Quincaillerie > Clous, vis et fixations > Clous": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Bricolage > Quincaillerie > Clous, vis et fixations > Écrous > Capuchons": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Bricolage > Sécurité > Équipement et matériel de sécurité > Masques de protection": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Bricolage > Sécurité > Équipement et matériel de sécurité > Masques de protection > Cartouches et filtres": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Bricolage > Sécurité > Équipement et matériel de sécurité > Masques de protection > Masques coques": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Bricolage > Sécurité > Équipement et matériel de sécurité > Masques de protection > Respirateurs de protection > Appareils respiratoires jetables": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Bébé et Puériculture > Chambre de Bébé > Matelas et linge de lit > Linge de lit": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Bébé et Puériculture > Chambre de Bébé > Matelas et linge de lit > Matelas > Matelas de parc": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Bébé et Puériculture > Repas de Bébé": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Bébé et Puériculture > Repas de Bébé > Allaitement > Coussinets et protège-mamelons": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Bébé et Puériculture > Repas de Bébé > Bavoirs > Bavoirs pour les repas": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Bébé et Puériculture > Repas de Bébé > Bavoirs > Bébé et Puériculture > Repas de Bébé > Bavoirs": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Bébé et Puériculture > Repas de Bébé > Vaisselle > Couverts": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 2.0
+  },
+  "Bébé et Puériculture > Sucette et Anneau de Dentition > Attaches-sucettes": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Cuisine et Maison > Ameublement et décoration > Salle de bain et WC > Accessoires de salle de bain > Accessoires WC > Ventouses pour toilettes et supports": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Cuisine et Maison > Aspirateurs, entretien des sols et nettoyeurs de vitres > Accessoires pour nettoyeurs vapeur > Chiffons": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 3.0
+  },
+  "Cuisine et Maison > Couteaux et ustensiles de cuisine > Ustensiles pour bar et vin > Bacs à glaçons": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Cuisine et Maison > Couteaux et ustensiles de cuisine > Ustensiles pour bar et vin > Ouvre-bouteilles": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Cuisine et Maison > Couteaux et ustensiles de cuisine > Ustensiles pour bar et vin > Pailles > Pailles réutilisables": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 3.0
+  },
+  "Cuisine et Maison > Produits et accessoires de nettoyage > Brosses": {
+    "precision": 1.0,
+    "recall": 0.5,
+    "f1-score": 0.6666666666666666,
+    "support": 2.0
+  },
+  "Cuisine et Maison > Produits et accessoires de nettoyage > Ustensiles de nettoyage": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Cuisine et Maison > Pâtisserie > Ustensiles à pâtisserie > Pinceaux": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Cuisine et Maison > Tableaux, posters et arts décoratifs > Tapisseries": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Cuisine et Maison > Vaisselle et arts de la table > Vaisselle et plats de service > Assiettes et plats de service > Plats et plateaux": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Cuisine et Maison > Vaisselle et arts de la table > Vaisselle et plats de service > Assiettes et plats de service > Plats et plateaux > Plats": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 2.0
+  },
+  "Cuisine et Maison > Vaisselle et arts de la table > Vaisselle et plats de service > Tasses, mugs et soucoupes": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Cuisine et Maison > Vaisselle et arts de la table > Vaisselle et plats de service > Tasses, mugs et soucoupes > Mugs et tasses à café": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Epicerie > Entretien de la maison et nettoyage > Essuie-tout, papier toilette et mouchoirs > Mouchoirs": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "High-Tech > Téléphones portables et accessoires > Accessoires téléphones portables > Coques, housses et étuis": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 4.0
+  },
+  "High-Tech > Téléphones portables et accessoires > Accessoires téléphones portables > Coques, housses et étuis > Étuis à rabat et folio": {
+    "precision": 1.0,
+    "recall": 0.25,
+    "f1-score": 0.4,
+    "support": 4.0
+  },
+  "High-Tech > Téléphones portables et accessoires > Accessoires téléphones portables > Coques, housses et étuis > Étuis à rabat et folio > High-Tech > Téléphones portables et accessoires > Accessoires téléphones portables > Coques, housses et étuis > Étuis à rabat et folio": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Hygiène dentaire > Hygiène dentaire des enfants > Brosses à dents > Brosses à dents électriques et accessoires > Brosses à dents électriques": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Hygiène et Santé > Cigarettes électroniques, chichas et accessoires > Cigarettes électroniques et accessoires > E-liquides et recharges": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Hygiène et Santé > Hygiène dentaire > Blanchiment des dents > Kits de blanchiment": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Hygiène et Santé > Hygiène dentaire > Brosses à dents et accessoires > Étuis et couvertures": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Hygiène et Santé > Hygiène dentaire > Gratte-langues": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Hygiène et Santé > Nutrition et Diététique > Amaigrissement et perte de poids > Barres diététiques": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Hygiène et Santé > Nutrition et Diététique > Amaigrissement et perte de poids > Barres diététiques > Hygiène et Santé > Nutrition et Diététique > Amaigrissement et perte de poids > Barres diététiques": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Hygiène et Santé > Nutrition et Diététique > Compléments alimentaires pour sportifs > Shakers pour compléments alimentaires pour sportifs": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 2.0
+  },
+  "Hygiène et Santé > Rasage et épilation > Ciseaux > Ciseaux pour nez et oreilles": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Hygiène et Santé > Rasage et épilation > Rasoirs électriques et accessoires > Rasoirs électriques homme > Rasoirs à grille": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Hygiène et Santé > Rasage et épilation > Rasoirs électriques et accessoires > Rasoirs électriques homme > Rasoirs à têtes rotatives": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 2.0
+  },
+  "Hygiène et Santé > Rasage et épilation > Épilation > Épilation à la cire > Chauffe-cires": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Informatique > Accessoires > Accessoires pour ordinateur portable > Autocollants pour ordinateur portable": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Informatique > Accessoires > Câbles et accessoires > Câbles > Câbles Lightning": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Informatique > Composants et pièces de remplacement > Composants internes > Refroidissement et ventilateurs > Ventilateurs de processeur": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Instruments de musique et Sono > Accessoires génériques > Câbles et jacks": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Instruments de musique et Sono > Accessoires génériques > Câbles et jacks > Câbles d'alimentation": {
+    "precision": 0.3333333333333333,
+    "recall": 1.0,
+    "f1-score": 0.5,
+    "support": 1.0
+  },
+  "Instruments de musique et Sono > Accessoires génériques > Câbles et jacks > Câbles pour instrument": {
+    "precision": 1.0,
+    "recall": 0.5,
+    "f1-score": 0.6666666666666666,
+    "support": 2.0
+  },
+  "Instruments de musique et Sono > Microphones et packs > Accessoires > Housses et étuis": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Luminaires & Eclairage > Luminaires intérieur > Lampes, abats-jour et pieds de lampes > Lampadaires": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Luminaires & Eclairage > Luminaires intérieur > Éclairage spécial > Rubans à LED": {
+    "precision": 1.0,
+    "recall": 0.6666666666666666,
+    "f1-score": 0.8,
+    "support": 3.0
+  },
+  "Luminaires & Eclairage > Luminaires intérieur > Éclairage spécial > Rubans à LED > Luminaires & Eclairage > Luminaires intérieur > Éclairage spécial > Rubans à LED": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Sports et Loisirs > Accessoires de sports > Dispositifs réfléchissants": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 1.0
+  },
+  "Sports et Loisirs > Accessoires de sports > Sacs de sport": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Sports et Loisirs > Pêche > Vêtements > Femme": {
+    "precision": 1.0,
+    "recall": 0.5,
+    "f1-score": 0.6666666666666666,
+    "support": 2.0
+  },
+  "Vêtements > Femme > Chaussettes et collants > Chaussettes": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Vêtements > Femme > Pulls, gilets et sweats > Sweats > Sweats à capuche": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 0.0
+  },
+  "Vêtements > Femme > T-shirts, tops et chemisiers > T-shirts à manches courtes": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Vêtements > Femme > Tenues de nuit, lingerie et sous-vêtements > Lingerie > Bodys": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Vêtements > Homme > T-shirts, polos et chemises > T-shirts à manches courtes": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 1.0
+  },
+  "Vêtements > Vêtements techniques et spéciaux > Déguisements et accessoires > Accessories > Adultes > Perruques et postiches pour adultes": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1-score": 1.0,
+    "support": 2.0
+  },
+  "accuracy": 0.78,
+  "macro avg": {
+    "precision": 0.6592592592592592,
+    "recall": 0.6379629629629631,
+    "f1-score": 0.6411111111111112,
+    "support": 100.0
+  },
+  "weighted avg": {
+    "precision": 0.8433333333333333,
+    "recall": 0.78,
+    "f1-score": 0.795,
+    "support": 100.0
+  }
+}

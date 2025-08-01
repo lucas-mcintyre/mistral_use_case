@@ -1,0 +1,188 @@
+🔧 Using cache: src/ft_cls_cache.joblib
+🤖 Model: ft:classifier:ministral-3b-latest:eca5aeb1:20250731:0ba03b81
+📁 Test file: data_processed/test.jsonl
+📦 Batch size: 32
+⏹️  Limit: 100 examples
+📊 Total examples in file: 9877
+
+🔄 Processing batch 1 / 308 (32 examples)
+   📋 Cached: 32, API calls needed: 0
+   📈 Progress: 32/9877 examples processed
+
+🔄 Processing batch 2 / 308 (32 examples)
+   📋 Cached: 32, API calls needed: 0
+   📈 Progress: 64/9877 examples processed
+
+🔄 Processing batch 3 / 308 (32 examples)
+   📋 Cached: 32, API calls needed: 0
+   📈 Progress: 96/9877 examples processed
+
+🔄 Processing batch 4 / 308 (32 examples)
+   📋 Cached: 32, API calls needed: 0
+   📈 Progress: 128/9877 examples processed
+   ⏹️  Reached limit of 100 examples
+
+🎯 Evaluation completed! Processed 100 examples in 4 batches
+
+🔍 Sample predictions (first 5):
+  1. True='Vêtements > Femme > Tenues de nuit, lingerie et sous-vêtements > Lingerie > Bodys' | Pred='Vêtements > Femme > Tenues de nuit, lingerie et sous-vêtements > Lingerie > Combinaisons et jupons'
+  2. True='Auto et Moto > Entretien auto et moto > Éponges, chiffons et brosses > Brosses' | Pred='Auto et Moto > Entretien auto et moto > Éponges, chiffons et brosses > Brosses'
+  3. True='Beauté et Parfum > Coiffure et soins des cheveux > Appareils et outils de coiffure > Fers à boucler' | Pred='Beauté et Parfum > Coiffure et soins des cheveux > Appareils et outils de coiffure > Fers à boucler'
+  4. True='Bébé et Puériculture > Repas de Bébé > Vaisselle > Couverts' | Pred='Bébé et Puériculture > Repas de Bébé > Vaisselle'
+  5. True='Cuisine et Maison > Vaisselle et arts de la table > Vaisselle et plats de service > Assiettes et plats de service > Plats et plateaux > Plats' | Pred='Cuisine et Maison > Vaisselle et arts de la table > Vaisselle et plats de service > Assiettes et plats de service > Plats et plateaux > Plats'
+
+📊 Creating confusion matrix for top 15 most frequent predictions...
+📈 Top 15 most frequent labels:
+   1. High-Tech > Téléphones portables et accessoires >  (4 examples)
+   2. High-Tech > Téléphones portables et accessoires >  (4 examples)
+   3. Luminaires & Eclairage > Luminaires intérieur > Éc (3 examples)
+   4. Cuisine et Maison > Couteaux et ustensiles de cuis (3 examples)
+   5. Cuisine et Maison > Aspirateurs, entretien des sol (3 examples)
+   6. Beauté et Parfum > Coiffure et soins des cheveux > (3 examples)
+   7. Beauté et Parfum > Coiffure et soins des cheveux > (2 examples)
+   8. Bébé et Puériculture > Repas de Bébé > Vaisselle > (2 examples)
+   9. Cuisine et Maison > Vaisselle et arts de la table  (2 examples)
+  10. Beauté et Parfum > Maquillage > Corps > Tatouages  (2 examples)
+  11. Hygiène et Santé > Nutrition et Diététique > Compl (2 examples)
+  12. Cuisine et Maison > Produits et accessoires de net (2 examples)
+  13. Hygiène et Santé > Rasage et épilation > Rasoirs é (2 examples)
+  14. Beauté et Parfum > Maquillage > Lèvres > Rouges à  (2 examples)
+  15. Vêtements > Vêtements techniques et spéciaux > Dég (2 examples)
+📊 Creating confusion matrix for 38 examples (top 15 labels)
+
+🔢 Confusion Matrix (Top 15 Labels):
+Rows = True Labels, Columns = Predicted Labels
+================================================================================
+True\Pred |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 10 | 11 | 12 | 13 | 14 | 15
+--------------------------------------------------------------------------------
+ 1      |  4 |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  .
+ 2      |  . |  4 |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  .
+ 3      |  . |  . |  3 |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  .
+ 4      |  . |  . |  . |  3 |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  .
+ 5      |  . |  . |  . |  . |  3 |  . |  . |  . |  . |  . |  . |  . |  . |  . |  .
+ 6      |  . |  . |  . |  . |  . |  3 |  . |  . |  . |  . |  . |  . |  . |  . |  .
+ 7      |  . |  . |  . |  . |  . |  . |  2 |  . |  . |  . |  . |  . |  . |  . |  .
+ 8      |  . |  . |  . |  . |  . |  . |  . |  1 |  . |  . |  . |  . |  . |  . |  .
+ 9      |  . |  . |  . |  . |  . |  . |  . |  . |  2 |  . |  . |  . |  . |  . |  .
+10      |  . |  . |  . |  . |  . |  . |  . |  . |  . |  2 |  . |  . |  . |  . |  .
+11      |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  2 |  . |  . |  . |  .
+12      |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  2 |  . |  . |  .
+13      |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  2 |  . |  .
+14      |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  1 |  .
+15      |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  . |  .
+
+📈 Confusion Matrix Summary:
+  ✅ Correct predictions: 34/34 = 1.000
+
+🤔 Most Confused Label Pairs:
+
+=== Evaluation on data_processed/test.jsonl ===
+accuracy        : 0.7400
+f1_micro        : 0.7400
+f1_macro        : 0.5312
+precision_micro : 0.7400
+recall_micro    : 0.7400
+
+Full classification report (macro‑averaged):
+                                                                                                                                                            precision    recall  f1-score   support
+
+                                                              Animalerie > Chiens > Transport et voyages > Accessoires voiture > Couvertures de protection     0.0000    0.0000    0.0000         1
+                                                                            Auto et Moto > Entretien auto et moto > Éponges, chiffons et brosses > Brosses     1.0000    1.0000    1.0000         1
+                                                                                                             Bagages > Accessoires > Accessoires de voyage     0.0000    0.0000    0.0000         0
+                                                                                            Bagages > Accessoires > Accessoires de voyage > Etuis cravates     0.0000    0.0000    0.0000         1
+                                                                             Bagages > Accessoires > Portefeuilles et porte-cartes > Femme > Portefeuilles     0.0000    0.0000    0.0000         0
+                                                                                                                  Beauté et Parfum > Accessoires et outils     1.0000    1.0000    1.0000         1
+                                Beauté et Parfum > Accessoires et outils > Trousses de toilettes, vaporisateurs et étuis > Vanity et trousses à maquillage     0.0000    0.0000    0.0000         0
+                                                         Beauté et Parfum > Bain, savons et soins du corps > Produits pour le bain > Boules effervescentes     1.0000    1.0000    1.0000         1
+                                                                Beauté et Parfum > Bain, savons et soins du corps > Produits pour le bain > Huiles de bain     0.0000    0.0000    0.0000         1
+                  Beauté et Parfum > Coiffure et soins des cheveux > Accessoires de coiffure > Extensions de cheveux, perruques et accessoires > Perruques     0.0000    0.0000    0.0000         0
+                                                              Beauté et Parfum > Coiffure et soins des cheveux > Appareils et outils de coiffure > Brosses     1.0000    1.0000    1.0000         3
+                                                              Beauté et Parfum > Coiffure et soins des cheveux > Appareils et outils de coiffure > Ciseaux     1.0000    1.0000    1.0000         2
+                                                       Beauté et Parfum > Coiffure et soins des cheveux > Appareils et outils de coiffure > Fers à boucler     1.0000    1.0000    1.0000         2
+                                                                     Beauté et Parfum > Coiffure et soins des cheveux > Shampooings et soins > Shampooings     1.0000    1.0000    1.0000         1
+                                                                                                        Beauté et Parfum > Maquillage > Corps > Paillettes     1.0000    1.0000    1.0000         1
+                                                                                             Beauté et Parfum > Maquillage > Corps > Tatouages temporaires     1.0000    1.0000    1.0000         2
+                                                                                                  Beauté et Parfum > Maquillage > Lèvres > Rouges à lèvres     1.0000    0.5000    0.6667         2
+                                                                                                    Beauté et Parfum > Maquillage > Teint > Fonds de teint     1.0000    1.0000    1.0000         1
+                                                                                                                     Beauté et Parfum > Soins pour la peau     0.0000    0.0000    0.0000         0
+                                                                                                  Beauté et Parfum > Soins pour la peau > Coffrets cadeaux     1.0000    1.0000    1.0000         1
+                                                                             Beauté et Parfum > Soins pour la peau > Corps > Produits hydratants > Mousses     0.0000    0.0000    0.0000         1
+                                                              Beauté et Parfum > Soins pour la peau > Mains et pieds > Crèmes pour les mains et les ongles     1.0000    1.0000    1.0000         1
+                                                                               Beauté et Parfum > Vernis à ongles et manucure > Décorations et accessoires     0.0000    0.0000    0.0000         0
+          Beauté et Parfum > Vernis à ongles et manucure > Décorations et accessoires > Accessoires de décoration pour nail art > Autocollants et pochoirs     1.0000    1.0000    1.0000         1
+                              Beauté et Parfum > Vernis à ongles et manucure > Décorations et accessoires > Accessoires de décoration pour nail art > Fimo     0.0000    0.0000    0.0000         1
+                                                 Beauté et Parfum > Vernis à ongles et manucure > Décorations et accessoires > Vernis gels semi-permanents     0.0000    0.0000    0.0000         1
+                                                                       Bricolage > Cuisines et salles de bain > Installations salles de bain > Cuvettes WC     1.0000    1.0000    1.0000         1
+                                                                Bricolage > Cuisines et salles de bain > Installations salles de bain > Robinets de lavabo     1.0000    1.0000    1.0000         1
+                                                        Bricolage > Outillage à main et électroportatif > Outillage à main > Outils de coupe > Coupe-verre     0.0000    0.0000    0.0000         1
+                                            Bricolage > Outillage à main et électroportatif > Outillage à main > Outils de maçonnerie et pose de carrelage     0.0000    0.0000    0.0000         0
+                                                                                  Bricolage > Quincaillerie > Clous, vis et fixations > Écrous > Capuchons     0.0000    0.0000    0.0000         1
+                                                 Bricolage > Sécurité > Équipement et matériel de sécurité > Masques de protection > Cartouches et filtres     0.0000    0.0000    0.0000         1
+                                                        Bricolage > Sécurité > Équipement et matériel de sécurité > Masques de protection > Masques coques     0.5000    1.0000    0.6667         1
+         Bricolage > Sécurité > Équipement et matériel de sécurité > Masques de protection > Respirateurs de protection > Appareils respiratoires jetables     1.0000    1.0000    1.0000         1
+                                                                           Bébé et Puériculture > Chambre de Bébé > Matelas et linge de lit > Linge de lit     0.0000    0.0000    0.0000         0
+                                                              Bébé et Puériculture > Chambre de Bébé > Matelas et linge de lit > Matelas > Matelas de parc     0.0000    0.0000    0.0000         1
+                                                                                                                      Bébé et Puériculture > Repas de Bébé     1.0000    1.0000    1.0000         1
+                                                                       Bébé et Puériculture > Repas de Bébé > Allaitement > Coussinets et protège-mamelons     1.0000    1.0000    1.0000         1
+                                                                                   Bébé et Puériculture > Repas de Bébé > Bavoirs > Bavoirs pour les repas     0.0000    0.0000    0.0000         0
+                                                           Bébé et Puériculture > Repas de Bébé > Bavoirs > Bébé et Puériculture > Repas de Bébé > Bavoirs     0.0000    0.0000    0.0000         1
+                                                                                                          Bébé et Puériculture > Repas de Bébé > Vaisselle     0.0000    0.0000    0.0000         0
+                                                                                               Bébé et Puériculture > Repas de Bébé > Vaisselle > Couverts     1.0000    0.5000    0.6667         2
+                                                                                 Bébé et Puériculture > Sucette et Anneau de Dentition > Attaches-sucettes     1.0000    1.0000    1.0000         1
+                                                                                       Chaussures et Sacs > Accessoires chaussures et entretien > Semelles     0.0000    0.0000    0.0000         0
+Cuisine et Maison > Ameublement et décoration > Salle de bain et WC > Accessoires de salle de bain > Accessoires WC > Ventouses pour toilettes et supports     1.0000    1.0000    1.0000         1
+                               Cuisine et Maison > Aspirateurs, entretien des sols et nettoyeurs de vitres > Accessoires pour nettoyeurs vapeur > Chiffons     1.0000    1.0000    1.0000         3
+                                                       Cuisine et Maison > Couteaux et ustensiles de cuisine > Ustensiles pour bar et vin > Bacs à glaçons     1.0000    1.0000    1.0000         1
+                                                     Cuisine et Maison > Couteaux et ustensiles de cuisine > Ustensiles pour bar et vin > Ouvre-bouteilles     1.0000    1.0000    1.0000         1
+                                      Cuisine et Maison > Couteaux et ustensiles de cuisine > Ustensiles pour bar et vin > Pailles > Pailles réutilisables     1.0000    1.0000    1.0000         3
+                                                                                        Cuisine et Maison > Produits et accessoires de nettoyage > Brosses     0.6667    1.0000    0.8000         2
+                                                                                       Cuisine et Maison > Pâtisserie > Ustensiles à pâtisserie > Pinceaux     0.0000    0.0000    0.0000         1
+                                                                                    Cuisine et Maison > Tableaux, posters et arts décoratifs > Tapisseries     1.0000    1.0000    1.0000         1
+             Cuisine et Maison > Vaisselle et arts de la table > Vaisselle et plats de service > Assiettes et plats de service > Plats et plateaux > Plats     1.0000    1.0000    1.0000         2
+                                             Cuisine et Maison > Vaisselle et arts de la table > Vaisselle et plats de service > Tasses, mugs et soucoupes     0.5000    1.0000    0.6667         1
+                     Cuisine et Maison > Vaisselle et arts de la table > Vaisselle et plats de service > Tasses, mugs et soucoupes > Mugs et tasses à café     0.0000    0.0000    0.0000         1
+                                                    Epicerie > Entretien de la maison et nettoyage > Essuie-tout, papier toilette et mouchoirs > Mouchoirs     0.0000    0.0000    0.0000         1
+                                                                                                 High-Tech > Piles, chargeurs et testeurs > Piles jetables     0.0000    0.0000    0.0000         0
+                                                                                                           High-Tech > Téléphones portables et accessoires     0.0000    0.0000    0.0000         0
+                                                                        High-Tech > Téléphones portables et accessoires > Accessoires téléphones portables     0.0000    0.0000    0.0000         0
+                                             High-Tech > Téléphones portables et accessoires > Accessoires téléphones portables > Coques, housses et étuis     1.0000    1.0000    1.0000         4
+                    High-Tech > Téléphones portables et accessoires > Accessoires téléphones portables > Coques, housses et étuis > Étuis à rabat et folio     1.0000    1.0000    1.0000         4
+              Hygiène dentaire > Hygiène dentaire des enfants > Brosses à dents > Brosses à dents électriques et accessoires > Brosses à dents électriques     1.0000    1.0000    1.0000         1
+                   Hygiène et Santé > Cigarettes électroniques, chichas et accessoires > Cigarettes électroniques et accessoires > E-liquides et recharges     1.0000    1.0000    1.0000         1
+                                                                         Hygiène et Santé > Hygiène dentaire > Blanchiment des dents > Kits de blanchiment     0.0000    0.0000    0.0000         1
+                                                                                      Hygiène et Santé > Hygiène dentaire > Blanchiment des dents > Strips     0.0000    0.0000    0.0000         0
+                                                               Hygiène et Santé > Hygiène dentaire > Brosses à dents et accessoires > Étuis et couvertures     1.0000    1.0000    1.0000         1
+                                                                                                      Hygiène et Santé > Hygiène dentaire > Gratte-langues     1.0000    1.0000    1.0000         1
+                                                        Hygiène et Santé > Nutrition et Diététique > Amaigrissement et perte de poids > Barres diététiques     1.0000    1.0000    1.0000         1
+                 Hygiène et Santé > Nutrition et Diététique > Compléments alimentaires pour sportifs > Shakers pour compléments alimentaires pour sportifs     1.0000    1.0000    1.0000         2
+                                                                           Hygiène et Santé > Rasage et épilation > Ciseaux > Ciseaux pour nez et oreilles     1.0000    1.0000    1.0000         1
+                                Hygiène et Santé > Rasage et épilation > Rasoirs électriques et accessoires > Rasoirs électriques homme > Rasoirs à grille     1.0000    1.0000    1.0000         1
+                       Hygiène et Santé > Rasage et épilation > Rasoirs électriques et accessoires > Rasoirs électriques homme > Rasoirs à têtes rotatives     1.0000    1.0000    1.0000         2
+                                                                  Hygiène et Santé > Rasage et épilation > Épilation > Épilation à la cire > Chauffe-cires     1.0000    1.0000    1.0000         1
+                                                 Informatique > Accessoires > Accessoires pour ordinateur portable > Autocollants pour ordinateur portable     1.0000    1.0000    1.0000         1
+                                                                                               Informatique > Accessoires > Câbles et accessoires > Câbles     0.0000    0.0000    0.0000         0
+                                                                            Informatique > Accessoires > Câbles et accessoires > Câbles > Câbles Lightning     0.0000    0.0000    0.0000         1
+                                                                  Informatique > Composants et pièces de remplacement > Composants internes > Alimentation     0.0000    0.0000    0.0000         0
+                  Informatique > Composants et pièces de remplacement > Composants internes > Refroidissement et ventilateurs > Ventilateurs de processeur     0.0000    0.0000    0.0000         1
+                                                                                 Instruments de musique et Sono > Accessoires génériques > Câbles et jacks     1.0000    1.0000    1.0000         1
+                                                         Instruments de musique et Sono > Accessoires génériques > Câbles et jacks > Câbles d'alimentation     0.5000    1.0000    0.6667         1
+                                                        Instruments de musique et Sono > Accessoires génériques > Câbles et jacks > Câbles pour instrument     1.0000    0.5000    0.6667         2
+                                                                    Instruments de musique et Sono > Microphones et packs > Accessoires > Housses et étuis     1.0000    1.0000    1.0000         1
+                                                       Luminaires & Eclairage > Luminaires intérieur > Lampes, abats-jour et pieds de lampes > Lampadaires     1.0000    1.0000    1.0000         1
+                                                                          Luminaires & Eclairage > Luminaires intérieur > Éclairage spécial > Rubans à LED     1.0000    1.0000    1.0000         3
+                                                                                    Sports et Loisirs > Accessoires de sports > Dispositifs réfléchissants     0.0000    0.0000    0.0000         1
+                                                                                              Sports et Loisirs > Baseball > Vêtements > Femme > Pantalons     0.0000    0.0000    0.0000         0
+                                                                                                             Sports et Loisirs > Pêche > Vêtements > Femme     1.0000    0.5000    0.6667         2
+                                                                                                 Vêtements > Femme > Chaussettes et collants > Chaussettes     1.0000    1.0000    1.0000         1
+                                                                                                          Vêtements > Femme > T-shirts, tops et chemisiers     0.0000    0.0000    0.0000         0
+                                                                             Vêtements > Femme > T-shirts, tops et chemisiers > T-shirts à manches courtes     0.0000    0.0000    0.0000         1
+                                                                         Vêtements > Femme > Tenues de nuit, lingerie et sous-vêtements > Lingerie > Bodys     0.0000    0.0000    0.0000         1
+                                                        Vêtements > Femme > Tenues de nuit, lingerie et sous-vêtements > Lingerie > Combinaisons et jupons     0.0000    0.0000    0.0000         0
+                                                                                                                            Vêtements > Fille > Sportswear     0.0000    0.0000    0.0000         0
+                                                                              Vêtements > Homme > T-shirts, polos et chemises > T-shirts à manches courtes     1.0000    1.0000    1.0000         1
+                  Vêtements > Vêtements techniques et spéciaux > Déguisements et accessoires > Accessories > Adultes > Perruques et postiches pour adultes     0.0000    0.0000    0.0000         2
+
+                                                                                                                                                  accuracy                         0.7400       100
+                                                                                                                                                 macro avg     0.5386    0.5368    0.5312       100
+                                                                                                                                              weighted avg     0.7583    0.7400    0.7393       100
+

@@ -1,0 +1,5 @@
+{
+  "f1_micro": 0.798,
+  "f1_macro": 0.6223484489278214,
+  "model": "ft:classifier:ministral-3b-latest:eca5aeb1:20250731:0ba03b81"
+}

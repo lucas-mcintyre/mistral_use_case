@@ -1,0 +1,355 @@
+# Mistral AI Product Classification Use Case
+
+This project implements and evaluates multiple baseline approaches for **product category classification** using French Amazon catalog data and Mistral AI models.
+
+## 📁 Project Structure
+
+```
+mistral_use_case/
+├── data_raw/                    # Raw data files
+│   └── fr_amazon_catalog.csv   # French Amazon product catalog
+├── data_processed/              # Processed data files
+│   ├── train.jsonl             # Training data
+│   ├── val.jsonl               # Validation data
+│   ├── test.jsonl              # Test data
+│   └── mappings/               # Label mappings
+│       ├── leaf2id.json        # Leaf category to ID mapping
+│       ├── id2path.json        # ID mapping to category path
+│       └── unique_labels_childleaf.json  # Unique leaf labels
+├── datascripts/                # Data preprocessing scripts
+│   ├── prepare_data.py         # Main data preparation
+│   ├── text_cleaning.py         # Cleaning data
+│   └── prepare_child_leaf_data.py  # Child-leaf category processing
+├── src/baselines/              # Classification baselines
+│   ├── naive_yes_no_baseline.py      # Zero-shot yes/no classification
+│   ├── classical_baseline.py          # TF-IDF + Logistic Regression
+│   ├── improved_RAG_baseline.py      # Dual retrieval + single prompt
+│   └── fine_tune_mistral.py          # Mistral fine-tuning
+├── src/api/                   # FastAPI server
+│   ├── main.py                # API server implementation
+│   └── client.py              # API client for testing
+├── eval_lib/                   # Evaluation utilities
+│   └── core.py                # Evaluation helpers and CLI
+├── notebooks/                  # Jupyter notebooks
+│   └── 01_eda.ipynb          # Exploratory data analysis
+└── requirements.txt            # Python dependencies
+```
+
+## 🚀 Quick Start
+
+### 1. Setup Environment
+
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+export MISTRAL_API_KEY="your-mistral-api-key-here"
+```
+
+### 2. Data Preparation
+
+```bash
+# Prepare main dataset
+python datascripts/prepare_data.py \
+    --input data_raw/fr_amazon_catalog.csv \
+    --output_dir data_processed
+
+# Prepare child-leaf categories for fine-tuning
+python datascripts/prepare_child_leaf_data.py \
+    --data_dir data_processed \
+    --output_dir data_processed
+```
+
+### 3. Run Baselines
+
+```bash
+# Zero-shot yes/no baseline
+python src/baselines/naive_yes_no_baseline.py \
+    --test data_processed/test.jsonl \
+    --mapping data_processed/mappings/leaf2id.json \
+    --model mistral-small-latest \
+    --output_dir models/naive_yes_no \
+    --limit 100
+
+# Dual retrieval RAG baseline
+python src/baselines/improved_RAG_baseline.py \
+    --test data_processed/test.jsonl \
+    --mapping data_processed/mappings/leaf2id.json \
+    --model mistral-large-latest \
+    --output_dir models/improved_RAG \
+    --k_tfidf 5 \
+    --k_embed 15 \
+    --limit 100
+
+# Fine-tune Mistral model on full leaf path
+python3 src/baselines/fine_tune_mistral.py \
+    --train data_processed/train.jsonl \       
+    --val data_processed/val.jsonl \
+    --test data_processed/test.jsonl \
+    --output_dir models/fine_tune \
+    --base_model ministral-3b-latest  
+    
+
+# Fine-tune Mistral model on optimal short leaf path
+python src/baselines/fine_tune_mistral.py \
+    --train data_processed/train_childleaf.jsonl \
+    --val data_processed/val_childleaf.jsonl \
+    --test data_processed/test_childleaf.jsonl \
+    --output_dir models/fine_tuned
+```
+
+### 4. Evaluate Fine-tuned Model
+
+```bash
+# Evaluate fine-tuned model
+python -m eval_lib.core mistral \
+    --model ft:classifier:ministral-3b-latest:eca5aeb1:20250731:0ba03b81 \
+    --test data_processed/test_childleaf.jsonl \
+    --cache models/fine_tuned/ft_cls_cache.joblib \
+    --limit 100 \
+    --report \
+    > src/evaluation_report.txt
+
+### 5. Start API Server
+
+```bash
+# Start the FastAPI server
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Test the API
+python src/api/client.py
+```
+
+## 🌐 API Server
+
+### FastAPI Server (`src/api/main.py`)
+Provides a REST API for serving the fine-tuned model:
+
+#### **Endpoints:**
+- `GET /` - API information
+- `GET /health` - Health check
+- `GET /model-info` - Model information
+- `POST /classify` - Single product classification
+- `POST /classify/batch` - Batch classification (with optional limit)
+- `POST /classify/limited` - Limited classification (process only N texts)
+- `GET /examples` - Example product descriptions
+- `GET /cache/stats` - Cache statistics
+- `DELETE /cache` - Clear cache
+
+#### **Usage Examples:**
+
+```bash
+# Start server
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Single classification
+curl -X POST "http://localhost:8000/classify" \
+     -H "Content-Type: application/json" \
+     -d '{"text": "Samsung Galaxy S21 Smartphone", "use_cache": true}'
+
+# Batch classification with limit
+curl -X POST "http://localhost:8000/classify/batch" \
+     -H "Content-Type: application/json" \
+     -d '{"texts": ["Product 1", "Product 2", "Product 3"], "use_cache": true, "limit": 2}'
+
+# Limited classification
+curl -X POST "http://localhost:8000/classify/limited" \
+     -H "Content-Type: application/json" \
+     -d '{"texts": ["Product 1", "Product 2", "Product 3"], "limit": 2, "use_cache": true}'
+```
+
+#### **Python Client:**
+```python
+import requests
+
+# Single classification
+response = requests.post("http://localhost:8000/classify", json={
+    "text": "Samsung Galaxy S21 Smartphone",
+    "use_cache": True
+})
+result = response.json()
+print(f"Predicted: {result['predicted_label']}")
+
+# Batch classification with limit
+response = requests.post("http://localhost:8000/classify/batch", json={
+    "texts": ["Product 1", "Product 2", "Product 3"],
+    "use_cache": True,
+    "limit": 2  # Only process first 2 texts
+})
+results = response.json()
+print(f"Processed {len(results['predictions'])} texts")
+```
+
+#### **API Documentation:**
+Once the server is running, visit:
+- **Interactive Docs**: http://localhost:8000/docs
+- **Alternative Docs**: http://localhost:8000/redoc
+- **Health Check**: http://localhost:8000/health
+```
+
+## 📊 Baseline Approaches
+
+### 1. Naive Yes/No Baseline (`naive_yes_no_baseline.py`)
+- **Strategy**: TF-IDF retrieval + yes/no questions to Mistral
+- **Process**: 
+  1. Retrieve top-K candidate categories using TF-IDF
+  2. Ask Mistral "Does this product belong to category X?" for each candidate
+  3. Select first category that gets "Oui" response
+- **Pros**: Simple, interpretable, no training required
+- **Cons**: Expensive (k x n API calls), sequential processing
+
+### 2. Classical Baseline (`classical_baseline.py`)
+- **Strategy**: TF-IDF vectorization + Logistic Regression
+- **Process**:
+  1. Convert product descriptions to TF-IDF vectors
+  2. Train Logistic Regression classifier
+  3. Predict on test set
+- **Pros**: Fast, cheap, well-understood
+- **Cons**: Limited to bag-of-words features
+
+### 3. Improved RAG Baseline (`improved_RAG_baseline.py`)
+- **Strategy**: Dual retrieval + single prompt classification
+- **Process**:
+  1. Retrieve candidates using TF-IDF (k_tfidf) + FAISS embeddings (k_embed)
+  2. Present all candidates to Mistral in single prompt
+  3. Model chooses best category by number
+- **Pros**: Combines multiple retrieval methods, single API call per example
+- **Cons**: Depends on retrieval quality
+
+### 4. Fine-tuned Mistral (`fine_tune_mistral.py`)
+- **Strategy**: Fine-tune Mistral model on product classification
+- **Process**:
+  1. Prepare training data in chat completion format
+  2. Upload to Mistral and create fine-tuning job
+  3. Wait for training completion
+  4. Use fine-tuned model for classification
+- **Pros**: Best potential performance, learns task-specific patterns
+- **Cons**: Expensive, requires training time, model-specific
+
+## 🔧 Data Processing
+
+### Main Data Preparation (`prepare_data.py`)
+- Loads French Amazon catalog CSV
+- Handles encoding (UTF-16) and delimiter (tab) issues
+- Extracts product descriptions and category paths
+- Splits data into train/val/test sets with stratified sampling
+- Handles edge cases for categories with few samples
+
+### Child-Leaf Processing (`prepare_child_leaf_data.py`)
+- Creates unique leaf-level category labels
+- Handles duplicate category names by extending paths
+- Generates shorter, more manageable labels for fine-tuning
+- Outputs JSONL files with only "text" and "label" fields
+
+## 📈 Evaluation
+
+### Evaluation Library (`eval_lib/core.py`)
+Provides multiple evaluation modes:
+
+```bash
+# Evaluate fine-tuned model
+python -m eval_lib.core mistral \
+    --model ft:classifier:ministral-3b-latest:eca5aeb1:20250731:0ba03b81 \
+    --test data/test.jsonl \
+    --cache src/ft_cls_cache.joblib \
+    --limit 1000 \
+    --report \
+    > src/evaluation_report.txt
+
+# Evaluate file predictions
+python -m eval_lib.core files --ref labels.txt --pred predictions.txt --report
+
+# Evaluate with ID mappings
+python -m eval_lib.core mappings --id2path id2path.json --preds predictions.json --report
+```
+
+#### **Python Client:**
+```python
+import requests
+
+# Single classification
+response = requests.post("http://localhost:8000/classify", json={
+    "text": "Samsung Galaxy S21 Smartphone",
+    "use_cache": True
+})
+result = response.json()
+print(f"Predicted: {result['predicted_label']}")
+```
+
+### Metrics
+- **Accuracy**: Overall correct predictions
+- **F1 Micro**: Micro-averaged F1 score
+- **F1 Macro**: Macro-averaged F1 score
+- **Precision/Recall**: Micro-averaged precision and recall
+- **Confusion Matrix**: For top 15 most frequent predictions
+
+### Progress Tracking
+All scripts include comprehensive progress tracking:
+- Example-by-example progress
+- Cache hit vs API call indicators
+- Running accuracy statistics
+- Detailed error analysis
+
+## 💾 Caching
+
+All baselines implement intelligent caching:
+- **API Responses**: Cached to avoid duplicate API calls
+- **Embeddings**: FAISS index and embeddings cached on disk
+- **Model Predictions**: Cached for fine-tuned model evaluation
+- **Cache Management**: Clear cache with `--clear-cache` flag
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Encoding Errors**: Ensure CSV is read with `encoding='utf-16'`
+2. **API Key Issues**: Set `MISTRAL_API_KEY` environment variable
+3. **Model Name Errors**: Use correct model names (e.g., `mistral-small-latest` not `mistral-small`)
+4. **Memory Issues**: Use `--limit` flag to process fewer examples
+5. **Network Errors**: Retry failed API calls, check internet connection
+
+### Debug Mode
+All scripts include verbose progress tracking. Look for:
+- `[SETUP]` - Initialization messages
+- `[EVAL]` - Evaluation progress
+- `[CACHE]` - Cache hit indicators
+- `[API]` - API call indicators
+- `[ERROR]` - Error messages
+
+## 📝 Example Output
+
+```
+[SETUP] Output directory: models/improved_RAG
+[SETUP] Initialized caches: LLM=llm_cache.joblib, Embed=embed_cache.joblib
+[BUILD] Building retrieval indices...
+[EVAL] Example 1/100:
+  Text: Samsung Galaxy S21 Smartphone with 128GB Storage...
+  True label: Smartphones
+  [RETRIEVAL] Found 18 unique candidates
+  [LLM] Model chose candidate 3: Smartphones
+  [RESULT] ✅ CORRECT (true: Smartphones)
+  [STATS] Running accuracy: 1/1 = 1.000
+
+[METRICS] Final Results:
+{
+  "retrieval_recall": 0.95,
+  "f1_micro": 0.87,
+  "f1_macro": 0.82
+}
+```
+
+## 🤝 Contributing
+
+1. Add new baselines to `src/baselines/`
+2. Update evaluation metrics in `eval_lib/core.py`
+3. Add data processing scripts to `datascripts/`
+4. Document changes in this README
+
+## 📄 License
+
+This project is for educational and research purposes. Please respect Mistral AI's terms of service and API usage limits.
