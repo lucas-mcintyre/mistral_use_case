@@ -1,0 +1,110 @@
+[
+  {
+    "name": "extended_balanced",
+    "k_tfidf": 20,
+    "k_embed": 20,
+    "total_candidates": 40,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.88,
+    "f1_macro": 0.7777777777777778
+  },
+  {
+    "name": "very_high_balanced",
+    "k_tfidf": 30,
+    "k_embed": 30,
+    "total_candidates": 60,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.88,
+    "f1_macro": 0.7925925925925927
+  },
+  {
+    "name": "tfidf_dominant",
+    "k_tfidf": 30,
+    "k_embed": 15,
+    "total_candidates": 45,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.88,
+    "f1_macro": 0.7777777777777778
+  },
+  {
+    "name": "embed_heavy",
+    "k_tfidf": 20,
+    "k_embed": 40,
+    "total_candidates": 60,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.88,
+    "f1_macro": 0.7954545454545454
+  },
+  {
+    "name": "embed_extreme",
+    "k_tfidf": 25,
+    "k_embed": 50,
+    "total_candidates": 75,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.88,
+    "f1_macro": 0.7608695652173914
+  },
+  {
+    "name": "high_balanced",
+    "k_tfidf": 25,
+    "k_embed": 25,
+    "total_candidates": 50,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.86,
+    "f1_macro": 0.7681159420289854
+  },
+  {
+    "name": "previous_best",
+    "k_tfidf": 15,
+    "k_embed": 15,
+    "total_candidates": 30,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.84,
+    "f1_macro": 0.717391304347826
+  },
+  {
+    "name": "tfidf_extreme",
+    "k_tfidf": 50,
+    "k_embed": 25,
+    "total_candidates": 75,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.84,
+    "f1_macro": 0.717391304347826
+  },
+  {
+    "name": "embed_dominant",
+    "k_tfidf": 15,
+    "k_embed": 30,
+    "total_candidates": 45,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.84,
+    "f1_macro": 0.7163120567375886
+  },
+  {
+    "name": "very_aggressive",
+    "k_tfidf": 40,
+    "k_embed": 40,
+    "total_candidates": 80,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.84,
+    "f1_macro": 0.7021276595744681
+  },
+  {
+    "name": "tfidf_heavy",
+    "k_tfidf": 40,
+    "k_embed": 20,
+    "total_candidates": 60,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.82,
+    "f1_macro": 0.6870748299319728
+  },
+  {
+    "name": "extreme",
+    "k_tfidf": 50,
+    "k_embed": 50,
+    "total_candidates": 100,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.8,
+    "f1_macro": 0.6462585034013605
+  }
+]

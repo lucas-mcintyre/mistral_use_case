@@ -108,9 +108,16 @@ def build_faiss(leaf_names: List[str], client: Mistral, embed_cache: KVCache, fa
 # 2. Candidate retrieval
 # ──────────────────────────────────────────────────────────────────────────────
 
-def retrieve_candidates(product_text: str, *,
-                        vec, X_tfidf, tfidf_k: int,
-                        client, faiss_index, leaf_names: List[str], embed_k: int):
+def retrieve_candidates(product_text: str, 
+                        *,
+                        vec, 
+                        X_tfidf, 
+                        tfidf_k: int,
+                        client, 
+                        faiss_index, 
+                        leaf_names: List[str], 
+                        embed_k: int,
+                        max_candidates: int = 100):
     # TF-IDF part
     print(f"      [TFIDF] Computing similarities for top-{tfidf_k}...")
     q = vec.transform([product_text])
@@ -140,7 +147,7 @@ def llm_choose(client: Mistral, model: str, product_text: str, cands: List[str],
     numbered = [f"{i+1}. {c}" for i, c in enumerate(cands)]
     prompt = ("Tu es un classificateur produit, expert dans la catégorisation et les descriptions des produits. "
               "Je vais te donner une description d'un produit, et tu devras choisir la catégorie la plus appropriée parmi les choix donnés par la suite."
-              f"Description du produit: \"{product_text[:400]}\"\n"
+              f"Description du produit: \"{product_text}\"\n"
               "Choisis la catégorie la plus appropriée, mais réponds UNIQUEMENT par le numéro de la catégorie, sans aucun autre commentaire."
               + "\n Les choix possibles sont : " + "\n ".join(numbered))
     hid = sha1(prompt)
@@ -177,13 +184,26 @@ def load_jsonl(path):
         for line in f:
             yield json.loads(line)
 
+# ──────────────────────────────────────────────────────────────────────────────
+# 5. Main evaluation loop
+# ──────────────────────────────────────────────────────────────────────────────
+
 def run(test_path, mapping_path, output_dir, model_name,
-        k_tfidf, k_embed, limit=None):
+        k_tfidf, k_embed, limit=None, shared_cache_dir=None):
     out = pathlib.Path(output_dir); out.mkdir(parents=True, exist_ok=True)
     print(f"[SETUP] Output directory: {out}")
-    llm_cache   = KVCache(out / CACHE_LLM)
-    embed_cache = KVCache(out / CACHE_EMBED)
-    print(f"[SETUP] Initialized caches: LLM={out / CACHE_LLM}, Embed={out / CACHE_EMBED}")
+    
+    # Use shared cache directory if provided
+    if shared_cache_dir:
+        shared_cache_path = pathlib.Path(shared_cache_dir)
+        print(f"[SETUP] Using shared cache directory: {shared_cache_path}")
+        llm_cache = KVCache(shared_cache_path / CACHE_LLM)
+        embed_cache = KVCache(shared_cache_path / CACHE_EMBED)
+        print(f"[SETUP] Initialized shared caches: LLM={shared_cache_path / CACHE_LLM}, Embed={shared_cache_path / CACHE_EMBED}")
+    else:
+        llm_cache = KVCache(out / CACHE_LLM)
+        embed_cache = KVCache(out / CACHE_EMBED)
+        print(f"[SETUP] Initialized local caches: LLM={out / CACHE_LLM}, Embed={out / CACHE_EMBED}")
 
     client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
     print(f"[SETUP] Initialized Mistral client with model: {model_name}")
@@ -198,7 +218,13 @@ def run(test_path, mapping_path, output_dir, model_name,
     print(f"[BUILD] Building TF-IDF index...")
     vec, X_tfidf = build_tfidf(leaf_names)
     print(f"[BUILD] Building FAISS index...")
-    faiss_index, _ = build_faiss(leaf_names, client, embed_cache, out / FAISS_INDEX)
+    # Use shared cache directory for FAISS index if provided
+    if shared_cache_dir:
+        shared_faiss_path = pathlib.Path(shared_cache_dir) / FAISS_INDEX
+        print(f"[BUILD] Using shared FAISS index from: {shared_faiss_path}")
+        faiss_index, _ = build_faiss(leaf_names, client, embed_cache, shared_faiss_path)
+    else:
+        faiss_index, _ = build_faiss(leaf_names, client, embed_cache, out / FAISS_INDEX)
     print(f"[BUILD] ✅ Built TF-IDF and FAISS indices")
 
     # Count total examples first

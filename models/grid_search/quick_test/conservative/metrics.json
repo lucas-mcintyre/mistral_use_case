@@ -1,0 +1,5 @@
+{
+  "retrieval_recall": 1.0,
+  "f1_micro": 0.7,
+  "f1_macro": 0.5652173913043478
+}

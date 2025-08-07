@@ -1,0 +1,47 @@
+[
+  {
+    "name": "aggressive",
+    "k_tfidf": 15,
+    "k_embed": 15,
+    "total_candidates": 30,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.9,
+    "f1_macro": 0.8095238095238095
+  },
+  {
+    "name": "tfidf_heavy",
+    "k_tfidf": 15,
+    "k_embed": 5,
+    "total_candidates": 20,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.85,
+    "f1_macro": 0.8
+  },
+  {
+    "name": "balanced",
+    "k_tfidf": 10,
+    "k_embed": 10,
+    "total_candidates": 20,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.8,
+    "f1_macro": 0.6818181818181818
+  },
+  {
+    "name": "embed_heavy",
+    "k_tfidf": 5,
+    "k_embed": 15,
+    "total_candidates": 20,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.8,
+    "f1_macro": 0.6521739130434783
+  },
+  {
+    "name": "conservative",
+    "k_tfidf": 5,
+    "k_embed": 5,
+    "total_candidates": 10,
+    "retrieval_recall": 1.0,
+    "f1_micro": 0.7,
+    "f1_macro": 0.5652173913043478
+  }
+]

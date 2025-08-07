@@ -5,7 +5,7 @@ This project implements and evaluates multiple baseline approaches for **product
 ## 📁 Project Structure
 
 ```
-mistral_use_case/
+lm_mistral_use_case/
 ├── data_raw/                    # Raw data files
 │   └── fr_amazon_catalog.csv   # French Amazon product catalog
 ├── data_processed/              # Processed data files
@@ -14,22 +14,30 @@ mistral_use_case/
 │   ├── test.jsonl              # Test data
 │   └── mappings/               # Label mappings
 │       ├── leaf2id.json        # Leaf category to ID mapping
-│       ├── id2path.json        # ID mapping to category path
-│       └── unique_labels_childleaf.json  # Unique leaf labels
+│       └── id2path.json        # ID mapping to category path
 ├── datascripts/                # Data preprocessing scripts
 │   ├── prepare_data.py         # Main data preparation
-│   ├── text_cleaning.py         # Cleaning data
-│   └── prepare_child_leaf_data.py  # Child-leaf category processing
+│   └── text_cleaning.py        # Text cleaning utilities
 ├── src/baselines/              # Classification baselines
 │   ├── naive_yes_no_baseline.py      # Zero-shot yes/no classification
 │   ├── classical_baseline.py          # TF-IDF + Logistic Regression
 │   ├── improved_RAG_baseline.py      # Dual retrieval + single prompt
-│   └── fine_tune_mistral.py          # Mistral fine-tuning
+│   ├── fine_tune_mistral.py          # Mistral fine-tuning
+│   ├── check_cache.py                # Cache verification utility
+│   └── README_parameter_search.md    # Parameter search guide
+├── src/baselines/grid_search_for_RAG/  # Parameter search tools
+│   ├── quick_param_test_extended.py   # Extended quick parameter exploration for RAG
+│   └── comprehensive_grid_search.py   # Full grid search with cost analysis
 ├── src/api/                   # FastAPI server
 │   ├── main.py                # API server implementation
 │   └── client.py              # API client for testing
 ├── eval_lib/                   # Evaluation utilities
 │   └── core.py                # Evaluation helpers and CLI
+├── models/                     # Model outputs and caches
+│   ├── naive_yes_no/          # Zero-shot baseline results
+│   ├── classical/             # Classical baseline results
+│   ├── improved_RAG/          # RAG baseline results and caches
+│   └── fine_tune/             # Fine-tuning results
 ├── notebooks/                  # Jupyter notebooks
 │   └── 01_eda.ipynb          # Exploratory data analysis
 └── requirements.txt            # Python dependencies
@@ -53,16 +61,20 @@ export MISTRAL_API_KEY="your-mistral-api-key-here"
 
 ### 2. Data Preparation
 
+> **Note:**  
+> You must first download the dataset manually from Kaggle:  
+> [https://www.kaggle.com/datasets/promptcloud/amazon-france-product-dataset](https://www.kaggle.com/datasets/promptcloud/amazon-france-product-dataset)  
+>  
+> Place the downloaded CSV file (e.g., `fr_amazon_catalog.csv`) in the `data_raw/` directory before running the data preparation scripts below.
+
 ```bash
-# Prepare main dataset
+# Prepare main dataset (filters parent paths and categories with <8 products)
 python datascripts/prepare_data.py \
     --input data_raw/fr_amazon_catalog.csv \
-    --output_dir data_processed
-
-# Prepare child-leaf categories for fine-tuning
-python datascripts/prepare_child_leaf_data.py \
-    --data_dir data_processed \
-    --output_dir data_processed
+    --output_dir data_processed_filtered \
+    --val_frac 0.10 \
+    --test_frac 0.10 \
+    --seed 42
 ```
 
 ### 3. Run Baselines
@@ -70,50 +82,96 @@ python datascripts/prepare_child_leaf_data.py \
 ```bash
 # Zero-shot yes/no baseline
 python src/baselines/naive_yes_no_baseline.py \
-    --test data_processed/test.jsonl \
-    --mapping data_processed/mappings/leaf2id.json \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
     --model mistral-small-latest \
     --output_dir models/naive_yes_no \
-    --limit 100
+
+# Classical baseline (TF-IDF + Logistic Regression)
+python src/baselines/classical_baseline.py \
+    --train data_processed_filtered/train.jsonl \
+    --val data_processed_filtered/val.jsonl \
+    --model_dir models/classical \
+    --mode train
+
+# Evaluate classical baseline
+python src/baselines/classical_baseline.py \
+    --test data_processed/test.jsonl \
+    --model_dir models/classical \
+    --mode eval
+
+# Quick test with limited data
+python src/baselines/classical_baseline.py \
+    --train data_processed_filtered/train.jsonl \
+    --val data_processed_filtered/val.jsonl \
+    --model_dir models/classical_quick \
+    --mode train \
+    --max_samples 1000 \
+    --max_classes 50
 
 # Dual retrieval RAG baseline
 python src/baselines/improved_RAG_baseline.py \
-    --test data_processed/test.jsonl \
-    --mapping data_processed/mappings/leaf2id.json \
-    --model mistral-large-latest \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --model mistral-small-latest \
     --output_dir models/improved_RAG \
-    --k_tfidf 5 \
-    --k_embed 15 \
+    --k_tfidf 25 \
+    --k_embed 25 \
     --limit 100
 
-# Fine-tune Mistral model on full leaf path
-python3 src/baselines/fine_tune_mistral.py \
-    --train data_processed/train.jsonl \       
-    --val data_processed/val.jsonl \
-    --test data_processed/test.jsonl \
-    --output_dir models/fine_tune \
-    --base_model ministral-3b-latest  
-    
+# Parameter search for optimal k_tfidf and k_embed values
+# First, check existing caches
+python src/baselines/check_cache.py --cache_dir models/improved_RAG_filtered_dataset
 
-# Fine-tune Mistral model on optimal short leaf path
+# Quick parameter test (5 combinations)
+python src/baselines/grid_search_for_RAG/quick_param_test_extended.py \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --shared_cache models/improved_RAG \
+    --limit 50
+
+# Comprehensive grid search across multiple models
+python src/baselines/grid_search_for_RAG/comprehensive_grid_search.py \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --shared_cache models/improved_RAG \
+    --k_tfidf_range 15 20 25 30 \
+    --k_embed_range 15 20 25 30 \
+    --models mistral-small-latest mistral-medium-latest mistral-large-latest \
+    --limit 100
+
+# Fine-tune Mistral model
 python src/baselines/fine_tune_mistral.py \
-    --train data_processed/train_childleaf.jsonl \
-    --val data_processed/val_childleaf.jsonl \
-    --test data_processed/test_childleaf.jsonl \
-    --output_dir models/fine_tuned
+    --train data_processed_filtered/train.jsonl \
+    --val data_processed_filtered/val.jsonl \
+    --test data_processed_filtered/test.jsonl \
+    --output_dir models/fine_tune \
+    --base_model ministral-3b-latest
 ```
 
-### 4. Evaluate Fine-tuned Model
+### 4. Evaluate Models
 
 ```bash
+# Evaluate improved RAG baseline
+python -m eval_lib.core improved_rag \
+    --test data_processed/test.jsonl \
+    --mapping data_processed/mappings/leaf2id.json \
+    --output_dir models/improved_RAG \
+    --model mistral-small-latest \
+    --k_tfidf 15 \
+    --k_embed 20 \
+    --limit 100 \
+    --report
+
 # Evaluate fine-tuned model
 python -m eval_lib.core mistral \
-    --model ft:classifier:ministral-3b-latest:eca5aeb1:20250731:0ba03b81 \
-    --test data_processed/test_childleaf.jsonl \
-    --cache models/fine_tuned/ft_cls_cache.joblib \
+    --model ft:classifier:mistral-small-latest:your-model-id \
+    --test data_processed/test.jsonl \
+    --cache models/fine_tune/ft_cls_cache.joblib \
     --limit 100 \
     --report \
     > src/evaluation_report.txt
+```
 
 ### 5. Start API Server
 
@@ -207,10 +265,13 @@ Once the server is running, visit:
 - **Strategy**: TF-IDF vectorization + Logistic Regression
 - **Process**:
   1. Convert product descriptions to TF-IDF vectors
-  2. Train Logistic Regression classifier
+  2. Train Logistic Regression classifier (one-vs-rest for multi-class)
   3. Predict on test set
-- **Pros**: Fast, cheap, well-understood
-- **Cons**: Limited to bag-of-words features
+- **Features**: 
+  - `--max_samples`: Limit training to N samples (for faster testing)
+  - `--max_classes`: Limit to N most frequent classes (for faster testing)
+- **Pros**: Fast, cheap, well-understood, good baseline performance
+- **Cons**: Limited to bag-of-words features, no semantic understanding
 
 ### 3. Improved RAG Baseline (`improved_RAG_baseline.py`)
 - **Strategy**: Dual retrieval + single prompt classification
@@ -229,7 +290,7 @@ Once the server is running, visit:
   3. Wait for training completion
   4. Use fine-tuned model for classification
 - **Pros**: Best potential performance, learns task-specific patterns
-- **Cons**: Expensive, requires training time, model-specific
+- **Cons**: Expensive, requires training time, model-specific, requires API credits
 
 ## 🔧 Data Processing
 
@@ -237,14 +298,10 @@ Once the server is running, visit:
 - Loads French Amazon catalog CSV
 - Handles encoding (UTF-16) and delimiter (tab) issues
 - Extracts product descriptions and category paths
-- Splits data into train/val/test sets with stratified sampling
-- Handles edge cases for categories with few samples
-
-### Child-Leaf Processing (`prepare_child_leaf_data.py`)
-- Creates unique leaf-level category labels
-- Handles duplicate category names by extending paths
-- Generates shorter, more manageable labels for fine-tuning
-- Outputs JSONL files with only "text" and "label" fields
+- **Filters parent paths** when child paths exist (keeps only leaf nodes)
+- **Filters categories** with fewer than 8 products in training data
+- Splits data into train/val/test sets (80/10/10 split)
+- No separation between seen/unseen categories - all categories can appear in any split
 
 ## 📈 Evaluation
 
@@ -252,11 +309,22 @@ Once the server is running, visit:
 Provides multiple evaluation modes:
 
 ```bash
+# Evaluate improved RAG baseline
+python -m eval_lib.core improved_rag \
+    --test data_processed/test.jsonl \
+    --mapping data_processed/mappings/leaf2id.json \
+    --output_dir models/improved_RAG \
+    --model mistral-small-latest \
+    --k_tfidf 15 \
+    --k_embed 20 \
+    --limit 100 \
+    --report
+
 # Evaluate fine-tuned model
 python -m eval_lib.core mistral \
-    --model ft:classifier:ministral-3b-latest:eca5aeb1:20250731:0ba03b81 \
-    --test data/test.jsonl \
-    --cache src/ft_cls_cache.joblib \
+    --model ft:classifier:mistral-small-latest:your-model-id \
+    --test data_processed/test.jsonl \
+    --cache models/fine_tune/ft_cls_cache.joblib \
     --limit 1000 \
     --report \
     > src/evaluation_report.txt
@@ -279,6 +347,15 @@ response = requests.post("http://localhost:8000/classify", json={
 })
 result = response.json()
 print(f"Predicted: {result['predicted_label']}")
+
+# Batch classification with limit
+response = requests.post("http://localhost:8000/classify/batch", json={
+    "texts": ["Product 1", "Product 2", "Product 3"],
+    "use_cache": True,
+    "limit": 2  # Only process first 2 texts
+})
+results = response.json()
+print(f"Processed {len(results['predictions'])} texts")
 ```
 
 ### Metrics
@@ -301,7 +378,56 @@ All baselines implement intelligent caching:
 - **API Responses**: Cached to avoid duplicate API calls
 - **Embeddings**: FAISS index and embeddings cached on disk
 - **Model Predictions**: Cached for fine-tuned model evaluation
+- **Shared Caches**: Reuse caches across parameter searches (see `src/baselines/README_parameter_search.md`)
 - **Cache Management**: Clear cache with `--clear-cache` flag
+
+### Parameter Search Pipeline
+
+The project includes a comprehensive parameter search pipeline for optimizing the improved RAG model:
+
+#### **1. Cache Verification**
+```bash
+# Check existing caches before parameter search
+python src/baselines/check_cache.py --cache_dir models/improved_RAG
+```
+
+#### **2. Quick Parameter Test**
+```bash
+# Test 5 key combinations to understand parameter space
+python src/baselines/quick_param_test.py \
+    --test data_processed/test.jsonl \
+    --mapping data_processed/mappings/leaf2id.json \
+    --shared_cache models/improved_RAG \
+    --limit 50
+```
+
+#### **3. Comprehensive Grid Search**
+```bash
+# Full grid search across multiple models with cost analysis
+python src/baselines/comprehensive_grid_search.py \
+    --test data_processed/test.jsonl \
+    --mapping data_processed/mappings/leaf2id.json \
+    --shared_cache models/improved_RAG \
+    --k_tfidf_range 15 20 25 30 \
+    --k_embed_range 15 20 25 30 \
+    --models mistral-small-latest mistral-medium-latest mistral-large-latest \
+    --limit 100
+```
+
+#### **Key Features:**
+- **Shared Caches**: Reuses FAISS index, embeddings, and LLM responses
+- **Cost Analysis**: Estimates API costs for each parameter combination
+- **Multi-Model Support**: Tests across small, medium, and large Mistral models
+- **Visualization**: Generates plots showing F1 scores vs cost
+- **Efficient**: Avoids redundant computations through smart caching
+
+#### **Output:**
+- Performance metrics for each combination
+- Cost estimates and analysis
+- Visualization plots (F1 scores, cost heatmaps)
+- Recommendations for optimal parameters
+
+For detailed workflow and troubleshooting, see `src/baselines/README_parameter_search.md`
 
 ## 🐛 Troubleshooting
 
@@ -323,6 +449,39 @@ All scripts include verbose progress tracking. Look for:
 
 ## 📝 Example Output
 
+### Data Preparation
+```
+Reading raw …
+Cleaning text …
+Original training paths: 2,333
+After filtering parent paths: 2,020
+
+Filtering categories by minimum product count...
+Categories with ≥8 products: 410
+Categories that are leaf nodes AND have ≥8 products: 369
+After filtering data:
+  Train rows: 15,941 (was 22,957)
+  Val rows: 1,976 (was 2,870)
+  Test rows: 1,950 (was 2,870)
+
+Split summary
+Total unique paths: 2,560
+Number of products: 28,697
+Final unique paths (leaf nodes only): 369
+```
+
+### Classical Baseline Training
+```
+[MODEL] Training Logistic Regression classifier...
+[MODEL] Number of classes: 369
+[MODEL] Fitting model (this may take a while)...
+[MODEL] Progress will be shown below:
+[LibLinear] 1 2 3 4 5...
+[MODEL] Training completed in 45.23 seconds!
+[MODEL] Average time per class: 0.123 seconds
+```
+
+### Improved RAG Evaluation
 ```
 [SETUP] Output directory: models/improved_RAG
 [SETUP] Initialized caches: LLM=llm_cache.joblib, Embed=embed_cache.joblib
@@ -341,6 +500,36 @@ All scripts include verbose progress tracking. Look for:
   "f1_micro": 0.87,
   "f1_macro": 0.82
 }
+```
+
+### Parameter Search Results
+```
+🔍 CACHE VERIFICATION:
+✅ faiss_index.bin      FAISS vector index   6.3 MB
+✅ embed_cache.joblib   Embedding cache      14.3 MB
+✅ llm_cache.joblib     LLM response cache   0.0 MB
+
+🚀 QUICK PARAMETER TEST:
+Testing 5 combinations...
+🥇 Best F1 Micro: k_tfidf=10, k_embed=10
+   F1 Micro: 0.7845, F1 Macro: 0.7234
+   Retrieval Recall: 0.9600
+   Total Candidates: 20
+
+📊 COMPREHENSIVE GRID SEARCH:
+Testing 16 combinations across 3 models...
+🏆 BEST COMBINATIONS:
+🥇 mistral-large-latest: k_tfidf=25, k_embed=25
+   F1 Micro: 0.8234, Cost: $12.45
+🥈 mistral-medium-latest: k_tfidf=20, k_embed=20  
+   F1 Micro: 0.8123, Cost: $8.23
+🥉 mistral-small-latest: k_tfidf=15, k_embed=15
+   F1 Micro: 0.7945, Cost: $4.12
+
+💡 RECOMMENDATIONS:
+- For best performance: mistral-large-latest with k_tfidf=25, k_embed=25
+- For cost efficiency: mistral-small-latest with k_tfidf=15, k_embed=15
+- For balanced approach: mistral-medium-latest with k_tfidf=20, k_embed=20
 ```
 
 ## 🤝 Contributing

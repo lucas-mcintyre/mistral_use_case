@@ -37,36 +37,71 @@ def main(cfg):
     df["leaf"] = df["path"].str.split(" > ").str[-1]
 
     # ------------------------------------------------------------------
-    # 2 . Category-level split  (80 % seen  / 20 % unseen)
+    # 2 . Simple row-level split: 80 train / 10 val / 10 test
     # ------------------------------------------------------------------
-    all_paths = df["path"].unique()
-    rng.shuffle(all_paths)
-    n_seen = int(len(all_paths) * 0.80)
-    seen_paths   = set(all_paths[:n_seen])
-    unseen_paths = set(all_paths[n_seen:])
-
-    df_seen   = df[df["path"].isin(seen_paths)].copy()
-    df_unseen = df[df["path"].isin(unseen_paths)].copy()   # will live only in test
-
-    # ------------------------------------------------------------------
-    # 3 . Row-level split inside seen categories: 80 train /10 val /10 test
-    #     -> no stratification (avoids 1-sample classes issue)
-    # ------------------------------------------------------------------
-    train_seen, tmp_seen = train_test_split(
-        df_seen, test_size=cfg.val_frac + cfg.test_frac, random_state=cfg.seed)
+    # No more separation between seen/unseen categories
+    # All categories can appear in train/val/test
+    train, tmp = train_test_split(
+        df, test_size=cfg.val_frac + cfg.test_frac, random_state=cfg.seed)
 
     rel_test = cfg.test_frac / (cfg.val_frac + cfg.test_frac)
-    val_seen,  test_seen = train_test_split(
-        tmp_seen, test_size=rel_test, random_state=cfg.seed)
-
-    train = train_seen
-    val   = val_seen
-    test  = pd.concat([test_seen, df_unseen], ignore_index=True)
+    val, test = train_test_split(
+        tmp, test_size=rel_test, random_state=cfg.seed)
 
     # ------------------------------------------------------------------
-    # 4 . Build label-to-id mapping *only from the training leaves*
+    # 3 . Filter out parent paths when child paths exist
     # ------------------------------------------------------------------
-    leaf2id = {p: i for i, p in enumerate(sorted(train["path"].unique()))}
+    
+    def filter_parent_paths(paths):
+        """Remove parent paths when child paths exist.
+        
+        For example, if we have:
+        - "A > B > C"
+        - "A > B > C > D"
+        
+        We keep only "A > B > C > D" and remove "A > B > C"
+        """
+        paths_list = sorted(paths)
+        filtered_paths = []
+        
+        for path in paths_list:
+            is_parent = False
+            for other_path in paths_list:
+                if other_path != path and other_path.startswith(path + " > "):
+                    is_parent = True
+                    break
+            if not is_parent:
+                filtered_paths.append(path)
+        
+        return filtered_paths
+    
+    # Get all unique paths from training data
+    all_train_paths = train["path"].unique()
+    
+    # Filter out parent paths
+    filtered_paths = filter_parent_paths(all_train_paths)
+    
+    print(f"Original training paths: {len(all_train_paths):,}")
+    print(f"After filtering parent paths: {len(filtered_paths):,}")
+    
+    # Filter out categories with fewer than 8 products in training data
+    print(f"\nFiltering categories by minimum product count...")
+    category_counts = train["path"].value_counts()
+    categories_with_enough_products = category_counts[category_counts >= 8].index.tolist()
+    
+    # Keep only categories that are both leaf nodes AND have enough products
+    final_categories = [cat for cat in filtered_paths if cat in categories_with_enough_products]
+    
+    print(f"Categories with ≥8 products: {len(categories_with_enough_products):,}")
+    print(f"Categories that are leaf nodes AND have ≥8 products: {len(final_categories):,}")
+    
+    # Update filtered_paths to use the final filtered list
+    filtered_paths = final_categories
+    
+    # ------------------------------------------------------------------
+    # 4 . Build label-to-id mapping *only from the filtered training paths*
+    # ------------------------------------------------------------------
+    leaf2id = {p: i for i, p in enumerate(sorted(filtered_paths))}
     id2path = {v: k for k, v in leaf2id.items()}
 
     (out / "mappings").mkdir(exist_ok=True)
@@ -74,7 +109,20 @@ def main(cfg):
     json.dump(id2path, open(out / "mappings" / "id2path.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
     # ------------------------------------------------------------------
-    # 5 . Dump splits to JSONL
+    # 5 . Filter data to only include rows with filtered paths
+    # ------------------------------------------------------------------
+    # Keep only rows where the path is in our filtered set
+    train_filtered = train[train["path"].isin(filtered_paths)].copy()
+    val_filtered = val[val["path"].isin(filtered_paths)].copy()
+    test_filtered = test[test["path"].isin(filtered_paths)].copy()
+    
+    print(f"After filtering data:")
+    print(f"  Train rows: {len(train_filtered):,} (was {len(train):,})")
+    print(f"  Val rows: {len(val_filtered):,} (was {len(val):,})")
+    print(f"  Test rows: {len(test_filtered):,} (was {len(test):,})")
+    
+    # ------------------------------------------------------------------
+    # 6 . Dump splits to JSONL
     # ------------------------------------------------------------------
     def dump(split_df: pd.DataFrame, name: str):
         path = out / f"{name}.jsonl"
@@ -84,25 +132,29 @@ def main(cfg):
                 f.write(json.dumps(obj, ensure_ascii=False) + "\n")
         print(f"Wrote {name}: {len(split_df):,} rows → {path}")
 
-    dump(train, "train")
-    dump(val,   "val")
-    dump(test,  "test")
+    dump(train_filtered, "train")
+    dump(val_filtered,   "val")
+    dump(test_filtered,  "test")
 
     # ------------------------------------------------------------------
-    # 6 . Console report
+    # 7 . Console report
     # ------------------------------------------------------------------
     print("\nSplit summary")
-    print(f"Seen categories (train/val/test):  {len(seen_paths):,}")
-    print(f"Unseen categories (test only):     {len(unseen_paths):,}")
-    print(f"Train rows: {len(train):,}  |  Val rows: {len(val):,}  |  Test rows: {len(test):,}")
+    print(f"Total unique paths: {len(df['path'].unique()):,}")
+    print(f"Number of products: {len(df):,}")
+    print(f"Number of products in train: {len(train_filtered):,}")
+    print(f"Number of products in val: {len(val_filtered):,}")
+    print(f"Number of products in test: {len(test_filtered):,}")
+    print(f"Train rows: {len(train_filtered):,}  |  Val rows: {len(val_filtered):,}  |  Test rows: {len(test_filtered):,}")
+    print(f"Final unique paths (leaf nodes only): {len(filtered_paths):,}")
 
 # ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--input",      required=True)
     p.add_argument("--output_dir", required=True)
-    p.add_argument("--val_frac",  type=float, default=0.10)   # fraction of *rows* inside seen cats
-    p.add_argument("--test_frac", type=float, default=0.10)   #   »       »         »
+    p.add_argument("--val_frac",  type=float, default=0.10)   # fraction of total rows
+    p.add_argument("--test_frac", type=float, default=0.10)   # fraction of total rows
     p.add_argument("--seed",      type=int,   default=42)
     args = p.parse_args()
     main(args)

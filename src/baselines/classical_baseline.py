@@ -6,6 +6,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (classification_report, confusion_matrix,
                              f1_score)
 import matplotlib.pyplot as plt
+import time
+from tqdm import tqdm
 
 # ──────────────────────────────────────────────────────────────────────────────
 # IO helpers
@@ -31,10 +33,39 @@ def load_split(split_path):
 # Train / Evaluate
 # ──────────────────────────────────────────────────────────────────────────────
 
-def train(train_path, val_path, model_dir):
+def train(train_path, val_path, model_dir, max_samples=None, max_classes=None):
     print("[TRAIN] Starting training process...")
+    start_time = time.time()
+    
     texts_train, y_train = load_split(train_path)
     texts_val,   y_val   = load_split(val_path)
+    
+    # Apply data sampling if requested
+    if max_samples is not None:
+        print(f"[SAMPLE] Limiting to {max_samples:,} training samples...")
+        if len(texts_train) > max_samples:
+            texts_train = texts_train[:max_samples]
+            y_train = y_train[:max_samples]
+            print(f"[SAMPLE] Reduced training set to {len(texts_train):,} samples")
+    
+    if max_classes is not None:
+        print(f"[SAMPLE] Limiting to {max_classes} most frequent classes...")
+        from collections import Counter
+        class_counts = Counter(y_train)
+        top_classes = [cls for cls, _ in class_counts.most_common(max_classes)]
+        print(f"[SAMPLE] Top classes: {top_classes[:5]}... (showing first 5)")
+        
+        # Filter training data
+        filtered_indices = [i for i, label in enumerate(y_train) if label in top_classes]
+        texts_train = [texts_train[i] for i in filtered_indices]
+        y_train = [y_train[i] for i in filtered_indices]
+        print(f"[SAMPLE] Reduced training set to {len(texts_train):,} samples from {len(top_classes)} classes")
+        
+        # Filter validation data
+        filtered_val_indices = [i for i, label in enumerate(y_val) if label in top_classes]
+        texts_val = [texts_val[i] for i in filtered_val_indices]
+        y_val = [y_val[i] for i in filtered_val_indices]
+        print(f"[SAMPLE] Reduced validation set to {len(texts_val):,} samples")
 
     print("[TFIDF] Building TF-IDF vectorizer...")
     print(f"[TFIDF] Training examples: {len(texts_train):,}")
@@ -52,12 +83,18 @@ def train(train_path, val_path, model_dir):
 
     print("[MODEL] Training Logistic Regression classifier...")
     print(f"[MODEL] Number of classes: {len(set(y_train))}")
+    
+    # Add verbose output for progress tracking
     clf = LogisticRegression(max_iter=1000,
                              n_jobs=-1,
+                             verbose=1,  # Add verbose output
                              multi_class="multinomial")
     print("[MODEL] Fitting model (this may take a while)...")
+    print("[MODEL] Progress will be shown below:")
     clf.fit(X_train, y_train)
-    print("[MODEL] Training completed!")
+    training_time = time.time() - start_time
+    print(f"[MODEL] Training completed in {training_time:.2f} seconds!")
+    print(f"[MODEL] Average time per class: {training_time/len(set(y_train)):.3f} seconds")
 
     print("[SAVE] Creating model directory...")
     pathlib.Path(model_dir).mkdir(parents=True, exist_ok=True)
@@ -140,6 +177,8 @@ if __name__ == "__main__":
     ap.add_argument("--test")
     ap.add_argument("--model_dir", default="models/classical")
     ap.add_argument("--mode", choices=["train", "eval"], default="train")
+    ap.add_argument("--max_samples", type=int, help="Limit training to N samples (for faster testing)")
+    ap.add_argument("--max_classes", type=int, help="Limit to N most frequent classes (for faster testing)")
     args = ap.parse_args()
 
     print(f"[MAIN] Starting classical baseline in {args.mode} mode...")
@@ -147,7 +186,7 @@ if __name__ == "__main__":
     
     if args.mode == "train":
         print("[MAIN] Running training mode...")
-        train(args.train, args.val, args.model_dir)
+        train(args.train, args.val, args.model_dir, args.max_samples, args.max_classes)
     else:
         print("[MAIN] Running evaluation mode...")
         evaluate(args.test, args.model_dir)

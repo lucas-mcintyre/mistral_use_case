@@ -226,7 +226,7 @@ def main():
     n_val, _     = write_cls_jsonl(args.val,   out/"val.jsonl",   args.max_val)
     print(f"Prepared {n_tr} train / {n_val} val rows • labels = {len(labels)}")
 
-    client = Mistral(api_key=os.environ["MISTRAL_API_KEY"])
+    client = Mistral(api_key=os.environ["VERO_API_KEY"])
     tr_id  = upload_file(client, out/"train.jsonl")
     val_id = upload_file(client, out/"val.jsonl")
     job_id = create_and_start_job(client, tr_id, val_id,
@@ -255,7 +255,7 @@ def main():
 if __name__ == "__main__":
     main()
     #client = Mistral(api_key=os.environ["MISTRAL_API_KEY"])
-    #canceled_jobs = client.fine_tuning.jobs.cancel(job_id = 'db819816-be67-4ad5-9d07-48b1ddea9f3a')
+    #canceled_jobs = client.fine_tuning.jobs.cancel(job_id = 'a21b623e-01f7-40d7-b502-3fa856051a75')
     #jobs = client.fine_tuning.jobs.list()
     #print(jobs)
     #print(canceled_jobs)
