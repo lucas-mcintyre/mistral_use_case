@@ -323,6 +323,65 @@ def evaluate_mistral(test_jsonl: str,
         print(classification_report(y_true, y_pred, digits=4))
     return metrics
 
+# ‑‑ NEW: evaluate improved RAG model ───────────────────────────────────────────
+
+def evaluate_improved_rag(test_jsonl: str,
+                         mapping_path: str,
+                         output_dir: str | pathlib.Path,
+                         model_name: str = "mistral-small-latest",
+                         k_tfidf: int = 10,
+                         k_embed: int = 10,
+                         limit: int | None = None,
+                         shared_cache_dir: str | None = None,
+                         report: bool = False):
+    """Run the improved RAG baseline over test_jsonl and print metrics.
+    
+    This function imports and runs the improved_RAG_baseline module.
+    """
+    try:
+        # Import the improved RAG baseline module
+        import sys
+        sys.path.append("src/baselines")
+        from improved_RAG_baseline import run as run_improved_rag
+    except ImportError as e:
+        raise ImportError(f"Could not import improved_RAG_baseline: {e}. Make sure you're in the project root directory.")
+    
+    print(f"🔧 Output directory: {output_dir}")
+    print(f"🤖 Model: {model_name}")
+    print(f"📁 Test file: {test_jsonl}")
+    print(f"📁 Mapping file: {mapping_path}")
+    print(f"🔍 TF-IDF candidates: {k_tfidf}")
+    print(f"🔍 Embedding candidates: {k_embed}")
+    if limit:
+        print(f"⏹️  Limit: {limit} examples")
+    if shared_cache_dir:
+        print(f"🔗 Shared cache directory: {shared_cache_dir}")
+    
+    # Run the improved RAG baseline
+    run_improved_rag(
+        test_path=test_jsonl,
+        mapping_path=mapping_path,
+        output_dir=output_dir,
+        model_name=model_name,
+        k_tfidf=k_tfidf,
+        k_embed=k_embed,
+        limit=limit,
+        shared_cache_dir=shared_cache_dir
+    )
+    
+    # Load and display the metrics that were saved
+    metrics_path = pathlib.Path(output_dir) / "metrics.json"
+    if metrics_path.exists():
+        metrics = json.load(open(metrics_path, "r", encoding="utf-8"))
+        print(f"\n=== Evaluation Results ===")
+        print(f"Retrieval Recall: {metrics['retrieval_recall']:.4f}")
+        print(f"F1 Micro: {metrics['f1_micro']:.4f}")
+        print(f"F1 Macro: {metrics['f1_macro']:.4f}")
+        return metrics
+    else:
+        print(f"⚠️  No metrics.json found at {metrics_path}")
+        return {}
+
 # ‑‑ CLI entry‑point ────────────────────────────────────────────────────────────
 
 def _cli():
@@ -351,6 +410,18 @@ def _cli():
     p_mis.add_argument("--limit", type=int)
     p_mis.add_argument("--report", action="store_true")
 
+    # NEW: improved RAG model
+    p_rag = sub.add_parser("improved_rag", help="Run improved RAG baseline on a JSONL test set")
+    p_rag.add_argument("--test", required=True, help="JSONL with {text,label}")
+    p_rag.add_argument("--mapping", required=True, help="Path to leaf2id.json mapping")
+    p_rag.add_argument("--output_dir", default="models/improved_RAG", help="Output directory for model artifacts")
+    p_rag.add_argument("--model", default="mistral-small-latest", help="Mistral model to use")
+    p_rag.add_argument("--k_tfidf", type=int, default=10, help="Number of TF-IDF candidates")
+    p_rag.add_argument("--k_embed", type=int, default=10, help="Number of embedding candidates")
+    p_rag.add_argument("--limit", type=int, help="Limit number of examples to process")
+    p_rag.add_argument("--shared_cache", type=str, help="Path to shared cache directory")
+    p_rag.add_argument("--report", action="store_true")
+
     args = ap.parse_args()
 
     if args.mode == "files":
@@ -363,6 +434,10 @@ def _cli():
                          cache_path=args.cache,
                          limit=args.limit,
                          report=args.report)
+    elif args.mode == "improved_rag":
+        evaluate_improved_rag(args.test, args.mapping, args.output_dir, args.model,
+                             k_tfidf=args.k_tfidf, k_embed=args.k_embed,
+                             limit=args.limit, shared_cache_dir=args.shared_cache, report=args.report)
 
 if __name__ == "__main__":
     _cli()

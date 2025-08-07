@@ -152,21 +152,54 @@ python src/baselines/fine_tune_mistral.py \
 ### 4. Evaluate Models
 
 ```bash
-# Evaluate improved RAG baseline
+# Evaluate improved RAG baseline with filtered dataset
 python -m eval_lib.core improved_rag \
-    --test data_processed/test.jsonl \
-    --mapping data_processed/mappings/leaf2id.json \
-    --output_dir models/improved_RAG \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset \
     --model mistral-small-latest \
     --k_tfidf 15 \
     --k_embed 20 \
     --limit 100 \
     --report
 
+# Evaluate improved RAG with shared cache (recommended)
+python -m eval_lib.core improved_rag \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset \
+    --model mistral-small-latest \
+    --k_tfidf 15 \
+    --k_embed 20 \
+    --shared_cache models/improved_RAG_filtered_dataset \
+    --limit 100 \
+    --report
+
+# Quick test with limited examples
+python -m eval_lib.core improved_rag \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset \
+    --model mistral-small-latest \
+    --k_tfidf 10 \
+    --k_embed 10 \
+    --limit 50
+
+# Multi-model comparison
+python -m eval_lib.core improved_rag \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset_medium \
+    --model mistral-medium-latest \
+    --k_tfidf 15 \
+    --k_embed 15 \
+    --shared_cache models/improved_RAG_filtered_dataset \
+    --limit 100
+
 # Evaluate fine-tuned model
 python -m eval_lib.core mistral \
-    --model ft:classifier:mistral-small-latest:your-model-id \
-    --test data_processed/test.jsonl \
+    --model ft:classifier:ministral-3b-latest:eca5aeb1:20250731:0ba03b81 \
+    --test data_processed_filtered/test.jsonl \
     --cache models/fine_tune/ft_cls_cache.joblib \
     --limit 100 \
     --report \
@@ -309,21 +342,33 @@ Once the server is running, visit:
 Provides multiple evaluation modes:
 
 ```bash
-# Evaluate improved RAG baseline
+# Evaluate improved RAG baseline with filtered dataset
 python -m eval_lib.core improved_rag \
-    --test data_processed/test.jsonl \
-    --mapping data_processed/mappings/leaf2id.json \
-    --output_dir models/improved_RAG \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset \
     --model mistral-small-latest \
     --k_tfidf 15 \
     --k_embed 20 \
     --limit 100 \
     --report
 
+# Quick test with shared cache
+python -m eval_lib.core improved_rag \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset \
+    --model mistral-small-latest \
+    --k_tfidf 10 \
+    --k_embed 10 \
+    --shared_cache models/improved_RAG_filtered_dataset \
+    --limit 50
+```
+
 # Evaluate fine-tuned model
 python -m eval_lib.core mistral \
     --model ft:classifier:mistral-small-latest:your-model-id \
-    --test data_processed/test.jsonl \
+    --test data_processed_filtered/test.jsonl \
     --cache models/fine_tune/ft_cls_cache.joblib \
     --limit 1000 \
     --report \
@@ -358,12 +403,85 @@ results = response.json()
 print(f"Processed {len(results['predictions'])} texts")
 ```
 
+### Testing Improved RAG Model
+
+The `eval_lib/core.py` provides a unified interface for testing the improved RAG baseline:
+
+#### **Basic Testing**
+```bash
+# Test with filtered dataset (recommended)
+python -m eval_lib.core improved_rag \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset \
+    --model mistral-small-latest \
+    --k_tfidf 15 \
+    --k_embed 15 \
+    --limit 100
+```
+
+#### **Testing with Shared Cache**
+```bash
+# Reuse existing caches for efficiency
+python -m eval_lib.core improved_rag \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset \
+    --model mistral-small-latest \
+    --k_tfidf 15 \
+    --k_embed 15 \
+    --shared_cache models/improved_RAG_filtered_dataset \
+    --limit 100
+```
+
+#### **Quick Testing**
+```bash
+# Fast test with limited examples
+python -m eval_lib.core improved_rag \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset \
+    --model mistral-small-latest \
+    --k_tfidf 10 \
+    --k_embed 10 \
+    --limit 50
+```
+
+#### **Multi-Model Testing**
+```bash
+# Compare different Mistral models
+python -m eval_lib.core improved_rag \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset_medium \
+    --model mistral-medium-latest \
+    --k_tfidf 15 \
+    --k_embed 15 \
+    --shared_cache models/improved_RAG_filtered_dataset \
+    --limit 100
+```
+
+#### **Parameter Testing**
+```bash
+# Test different k_tfidf and k_embed values
+python -m eval_lib.core improved_rag \
+    --test data_processed_filtered/test.jsonl \
+    --mapping data_processed_filtered/mappings/leaf2id.json \
+    --output_dir models/improved_RAG_filtered_dataset \
+    --model mistral-small-latest \
+    --k_tfidf 20 \
+    --k_embed 25 \
+    --shared_cache models/improved_RAG_filtered_dataset \
+    --limit 100
+```
+
 ### Metrics
 - **Accuracy**: Overall correct predictions
 - **F1 Micro**: Micro-averaged F1 score
 - **F1 Macro**: Macro-averaged F1 score
 - **Precision/Recall**: Micro-averaged precision and recall
 - **Confusion Matrix**: For top 15 most frequent predictions
+- **Retrieval Recall**: Percentage of true labels found in candidate set
 
 ### Progress Tracking
 All scripts include comprehensive progress tracking:
